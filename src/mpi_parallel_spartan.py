@@ -3,46 +3,54 @@
 
 """
   @Author: Garvyn-Yuan
-  @FIle Name: mpi_parellel_spartan.py
-  @Contact: 228077gy@163.com
-  @Description:
-  @Date: File created in 15:00-2025/3/30
-  @Modified by: 
+  @FIle Name: mpi_parallel_spartan.py
+  @Contact: 228077gy@gmail.com
+  @Description: cluster computing on spartan ; Sentiment analysis on a large dataset using MPI
+  @Date: File created in 15:00-2025/3/29
+  @Modified by: Garvyn 3/30
   @Version: V1.0
 """
-
 """
-  @Author: Garvyn-Yuan
-  @File Name: mpi_parellel_spartan.py
-  @Contact: 228077gy@gamil.com
-  @Description: Sentiment analysis on a large dataset using MPI
-  @Date: 2025-03-28
-  @Version: V1.0
+func:
+1. comm.send : blocking when data is copied to os cache or received by recv [blocked until receive process ready] 
+2. comm.recv : blocking when receive data (if recv start first, it will wait until match send)
+3. [param - tag : match send and recv ]
+   [param - dest : destination ]
+   [param - source : source of data]
+   
+mechanism: 
+    send wait for recv, but if the data is small, will optimize to put it in the cache and return send, if recv starts
+first, it will wait for send . 
+    The whole process work as a stream line: rank0-- read,send,receive,gather ; rank x -- receive, process, send back
 """
 
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
+
+
 
 import json
 import sys
 import io
 from mpi4py import MPI
 
-# MPI 初始化
+# MPI initialization
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
+# start time
+start_time = MPI.Wtime()
 
-# 设定读取的文件块大小
-CHUNK_SIZE = 20 * 1024
-DATA_PATH = "data/mastodon-106k.ndjson"
+# fixed params
+CHUNK_SIZE = 20 * 1024 * 1024  # 4MB
+DATA_PATH = "data/medium-16m.ndjson"
+# CHUNK_SIZE = 20 * 1024  # 20kb
+# DATA_PATH = "data/mastodon-106k.ndjson"
 
-# 确保 Python 输出 UTF-8
+# output stream to utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 
 def read_data_in_chunks():
-    """ rank 0 逐块读取数据，并分发到各进程 """
+    """ rank 0 read ,split and send """
     if rank == 0:
         with open(DATA_PATH, "r", encoding="utf-8") as f:
             buffer = []
@@ -50,46 +58,49 @@ def read_data_in_chunks():
 
             for line in f:
                 buffer.append(line)
-                buffer_size += len(line.encode('utf-8'))
+                buffer_size += len(line.encode('utf-8'))  # cal chunk size by cumulating
 
-                # 达到 CHUNK_SIZE 后，发送数据
+                # hit the limitation  - > send
                 if buffer_size >= CHUNK_SIZE:
                     send_data(buffer)
                     buffer = []
                     buffer_size = 0
 
-            # 发送剩余数据
+            # send rest of the data
             if buffer:
                 send_data(buffer)
 
-        # 通知所有进程数据结束
-        for _ in range(1, size):
-            comm.send(None, dest=_, tag=1)
+        # notify each subprocess when data transfer is done !!! -> so they can continue their work
+        for serial_num in range(1, size):
+            comm.send(None, dest=serial_num, tag=1)
 
 
 def send_data(data_chunk):
-    """ rank 0 将数据块分发给各个进程 """
+    """ send data to workers """
     num_workers = size - 1
     chunk_size = len(data_chunk) // num_workers
 
-    for i in range(1, size):
-        start = (i - 1) * chunk_size
-        end = len(data_chunk) if i == num_workers else i * chunk_size
-        comm.send(data_chunk[start:end], dest=i, tag=1)
-        print(f"Sent {len(data_chunk[start:end])} lines to Rank {i}")  # 调试信息
+    for serial_num in range(1, size):
+        # start pointer
+        start = (serial_num - 1) * chunk_size
+        # end pointer
+        end = len(data_chunk) if serial_num == num_workers else serial_num * chunk_size
+        comm.send(data_chunk[start:end], dest=serial_num, tag=1)
+        # print(f"Sent {len(data_chunk[start:end])} lines to Rank {serial_num}")
 
 
 def process_and_aggregate():
-    """ 子进程处理数据并聚合 """
+    """ subprocess fetch data, process and aggregate """
     while True:
+        # print(f"Rank {rank} receiving data......")
         data_chunk = comm.recv(source=0, tag=1)
         if data_chunk is None:
-            break  # 结束信号
+            break  # done
 
-        print(f"Rank {rank} received {len(data_chunk)} entries")  # 调试信息
+        # print(f"Rank {rank} received {len(data_chunk)} entries")
 
-        user_sentiments = {}  # 存储用户 sentiment
-        hour_sentiments = {}  # 存储时间 sentiment（小时）
+        user_sentiments = {}  # user sentiment
+        hour_sentiments = {}  # time sentiment（hour）
 
         for line in data_chunk:
             try:
@@ -99,18 +110,18 @@ def process_and_aggregate():
                 username = data.get("account", {}).get("username", "")
                 created_at = data.get("createdAt", None)
 
-                if not user_id or sentiment is None:
+                if not user_id or not username or sentiment is None:
                     continue
 
-                # 按 (user_id, username) 累加 sentiment
+                # aggregate by (user_id, username)
                 user_key = (user_id, username)
                 if user_key not in user_sentiments:
                     user_sentiments[user_key] = 0.0
                 user_sentiments[user_key] += sentiment
 
-                # 按小时累加 sentiment
+                # cumulate by hour sentiment
                 if created_at:
-                    hour_key = created_at[:13]  # 取到小时 "2023-11-23T15"
+                    hour_key = created_at[:13]  # eg: "2023-11-23T15"
                     if hour_key not in hour_sentiments:
                         hour_sentiments[hour_key] = 0.0
                     hour_sentiments[hour_key] += sentiment
@@ -121,7 +132,7 @@ def process_and_aggregate():
                 print(f"Error processing line: {e}")
                 continue
 
-        # 发送处理结果回 rank 0
+        # send results to  rank 0
         comm.send((user_sentiments, hour_sentiments), dest=0, tag=2)
 
 
@@ -130,37 +141,37 @@ def gather_results():
     final_user_sentiments = {}
     final_hour_sentiments = {}
 
-    for _ in range(1, size):
-        user_data, hour_data = comm.recv(source=_, tag=2)
+    for serial_num in range(1, size):
+        user_data, hour_data = comm.recv(source=serial_num, tag=2)
         # print(user_data)
         # print(hour_data)
 
-        # 合并用户 sentiment 结果
+        # aggregate people data
         for (user_id, username), sentiment in user_data.items():
             user_key = (user_id, username)
             if user_key not in final_user_sentiments:
                 final_user_sentiments[user_key] = 0.0
             final_user_sentiments[user_key] += sentiment
 
-        # 合并小时 sentiment 结果
+        # aggregate hour data
         for hour, sentiment in hour_data.items():
             if hour not in final_hour_sentiments:
                 final_hour_sentiments[hour] = 0.0
             final_hour_sentiments[hour] += sentiment
 
-    # 计算最快乐/最不快乐的用户
+    # happiest/saddest people
     sorted_users = sorted(final_user_sentiments.items(), key=lambda x: x[1], reverse=True)
     # print(sorted_users)
     happiest_users = sorted_users[:5]
     saddest_users = sorted_users[-5:]
 
-    # 计算最快乐/最不快乐的小时
+    # happiest/saddest hours
     sorted_hours = sorted(final_hour_sentiments.items(), key=lambda x: x[1], reverse=True)
     # print(sorted_hours)
     happiest_hours = sorted_hours[:5]
     saddest_hours = sorted_hours[-5:]
 
-    # 输出结果
+    # res
     print("\nTop 5 Happiest Users:")
     for (user_id, username), score in happiest_users:
         print(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}")
@@ -178,11 +189,51 @@ def gather_results():
         print(f"{hour} - Sentiment Score: {score:.2f}")
 
 
-# 运行程序
-if rank == 0:
-    read_data_in_chunks()
-    gather_results()
-else:
-    process_and_aggregate()
+# # version 1
+# # 运行程序
+# if rank == 0:
+#     read_data_in_chunks()
+#     gather_results()
+# else:
+#     # can not be initialized as process_and_aggregate([]) here because when each subprocess started , some may get [].
+#     process_and_aggregate()
+#
+# # process synchronization
+# comm.barrier()
+# # end time
+# end_time = MPI.Wtime()
+# if rank == 0:
+#     print(f"Total execution time: {end_time - start_time:.2f} seconds")
 
+
+# version 2: main process and time stat
+if rank == 0:
+    read_start = MPI.Wtime()
+    read_data_in_chunks()
+    read_end = MPI.Wtime()
+    print(f"Data reading and distribution time: {read_end - read_start:.2f} seconds")
+
+# Timing for processing and aggregation by all ranks
+processing_start = MPI.Wtime()
+if rank != 0:
+    process_and_aggregate()
+processing_end = MPI.Wtime()
+if rank != 0:
+    print(f"Rank {rank} processing time: {processing_end - processing_start:.2f} seconds")
+
+# Final time after gathering results
+gather_start = MPI.Wtime()
+if rank == 0:
+    gather_results()
+gather_end = MPI.Wtime()
+if rank == 0:
+    print(f"Results gathering time: {gather_end - gather_start:.2f} seconds")
+
+# Use barrier to synchronize all ranks before printing final execution time
+comm.barrier()
+
+# Final execution time
+end_time = MPI.Wtime()
+if rank == 0:
+    print(f"Total execution time: {end_time - start_time:.2f} seconds")
 
