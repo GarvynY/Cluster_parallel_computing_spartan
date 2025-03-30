@@ -1,5 +1,8 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import json
+import sys
+import io
+from mpi4py import MPI
 
 """
   @Author: Garvyn-Yuan
@@ -24,14 +27,6 @@ first, it will wait for send .
     The whole process work as a stream line: rank0-- read,send,receive,gather ; rank x -- receive, process, send back
 """
 
-
-
-
-import json
-import sys
-import io
-from mpi4py import MPI
-
 # MPI initialization
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -49,26 +44,26 @@ DATA_PATH = "data/medium-16m.ndjson"
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 
-def read_data_in_chunks():
+def load_data_chunk_stream():
     """ rank 0 read ,split and send """
     if rank == 0:
         with open(DATA_PATH, "r", encoding="utf-8") as f:
-            buffer = []
+            rank0_buffer = []
             buffer_size = 0
 
             for line in f:
-                buffer.append(line)
+                rank0_buffer.append(line)
                 buffer_size += len(line.encode('utf-8'))  # cal chunk size by cumulating
 
                 # hit the limitation  - > send
                 if buffer_size >= CHUNK_SIZE:
-                    send_data(buffer)
-                    buffer = []
+                    send_data(rank0_buffer)
+                    rank0_buffer = []
                     buffer_size = 0
 
             # send rest of the data
-            if buffer:
-                send_data(buffer)
+            if rank0_buffer:
+                send_data(rank0_buffer)
 
         # notify each subprocess when data transfer is done !!! -> so they can continue their work
         for serial_num in range(1, size):
@@ -90,7 +85,7 @@ def send_data(data_chunk):
 
 
 def process_and_aggregate():
-    """ subprocess fetch data, process and aggregate """
+    """ subprocess fetch data, process and send back """
     while True:
         # print(f"Rank {rank} receiving data......")
         data_chunk = comm.recv(source=0, tag=1)
@@ -104,6 +99,7 @@ def process_and_aggregate():
 
         for line in data_chunk:
             try:
+                # set default value to fill the empty position
                 data = json.loads(line).get("doc", {})
                 sentiment = data.get("sentiment", 0.00)
                 user_id = data.get("account", {}).get("id", "")
@@ -132,12 +128,12 @@ def process_and_aggregate():
                 print(f"Error processing line: {e}")
                 continue
 
-        # send results to  rank 0
+        # send results to rank 0
         comm.send((user_sentiments, hour_sentiments), dest=0, tag=2)
 
 
 def gather_results():
-    """ rank 0 收集所有进程的结果，并计算最终结果 """
+    """ rank 0 collects all results and aggregate """
     final_user_sentiments = {}
     final_hour_sentiments = {}
 
@@ -159,13 +155,13 @@ def gather_results():
                 final_hour_sentiments[hour] = 0.0
             final_hour_sentiments[hour] += sentiment
 
-    # happiest/saddest people
+    # happiest/saddest people -- sort by score（the second term）
     sorted_users = sorted(final_user_sentiments.items(), key=lambda x: x[1], reverse=True)
     # print(sorted_users)
     happiest_users = sorted_users[:5]
     saddest_users = sorted_users[-5:]
 
-    # happiest/saddest hours
+    # happiest/saddest hours -- sort by score（the second term）
     sorted_hours = sorted(final_hour_sentiments.items(), key=lambda x: x[1], reverse=True)
     # print(sorted_hours)
     happiest_hours = sorted_hours[:5]
@@ -189,8 +185,8 @@ def gather_results():
         print(f"{hour} - Sentiment Score: {score:.2f}")
 
 
-# # version 1
-# # 运行程序
+# # version 1 -- run test
+
 # if rank == 0:
 #     read_data_in_chunks()
 #     gather_results()
@@ -209,7 +205,7 @@ def gather_results():
 # version 2: main process and time stat
 if rank == 0:
     read_start = MPI.Wtime()
-    read_data_in_chunks()
+    load_data_chunk_stream()
     read_end = MPI.Wtime()
     print(f"Data reading and distribution time: {read_end - read_start:.2f} seconds")
 
@@ -236,4 +232,3 @@ comm.barrier()
 end_time = MPI.Wtime()
 if rank == 0:
     print(f"Total execution time: {end_time - start_time:.2f} seconds")
-
