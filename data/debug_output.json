@@ -1,0 +1,450 @@
+[
+  {
+    "doc": {
+      "sensitive": false,
+      "createdAt": "2025-02-10T02:56:00.000Z",
+      "content": "<p>This VG rated Nikon FE2 is available at my local shop, National Camera, for $235. That’s a fair price. The FE2 is basically an FM3A that needs batteries but costs two-thirds less. It has the best viewfinder going. <a href=\"https://www.natcam.com/products/nikon-fe2-35mm-film-slr-manual-focus-camera-body-chrome/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">natcam.com/products/nikon-fe2-</span><span class=\"invisible\">35mm-film-slr-manual-focus-camera-body-chrome/</span></a></p>",
+      "sentiment": 0.05405405405405406,
+      "filtered": [],
+      "favouritesCount": 0,
+      "url": "https://photog.social/@tomnorthfilm/113977338143993092",
+      "mentions": [],
+      "inReplyToId": null,
+      "tags": [],
+      "visibility": "public",
+      "inReplyToAccountId": null,
+      "repliesCount": 0,
+      "editedAt": null,
+      "reblog": null,
+      "spoilerText": "",
+      "account": {
+        "fields": [],
+        "avatar": "https://o.mastodon.au/cache/accounts/avatars/109/356/701/445/676/569/original/b1d56ed4422fde4f.png",
+        "createdAt": "2022-11-05T00:00:00.000Z",
+        "headerStatic": "https://o.mastodon.au/cache/accounts/headers/109/356/701/445/676/569/original/879600f02b7ba286.png",
+        "statusesCount": 2408,
+        "bot": false,
+        "indexable": false,
+        "id": "109356701445676569",
+        "url": "https://photog.social/@tomnorthfilm",
+        "avatarStatic": "https://o.mastodon.au/cache/accounts/avatars/109/356/701/445/676/569/original/b1d56ed4422fde4f.png",
+        "lastStatusAt": "2025-02-10",
+        "locked": false,
+        "followersCount": 323,
+        "header": "https://o.mastodon.au/cache/accounts/headers/109/356/701/445/676/569/original/879600f02b7ba286.png",
+        "hideCollections": false,
+        "username": "tomnorthfilm",
+        "group": false,
+        "acct": "tomnorthfilm@photog.social",
+        "followingCount": 222,
+        "displayName": "tomnorthfilm",
+        "emojis": [],
+        "note": "<p>Minnesota-Based Photographer | Mostly Film | Nikon &amp; Olympus SLRs | Old Folders | he/him | <a href=\"https://photog.social/tags/believeinfilm\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>believeinfilm</span></a></p>",
+        "uri": "https://photog.social/users/tomnorthfilm",
+        "discoverable": false
+      },
+      "mediaAttachments": [],
+      "language": "en",
+      "reblogsCount": 0,
+      "emojis": [],
+      "card": null,
+      "uri": "https://photog.social/users/tomnorthfilm/statuses/113977338143993092",
+      "poll": null
+    },
+    "@version": "1",
+    "@timestamp": "2025-02-10T02:56:02.379247570Z",
+    "doc_as_upsert": true
+  },
+  {
+    "doc": {
+      "sensitive": false,
+      "createdAt": "2025-02-10T02:56:16.000Z",
+      "content": "<p>I don't like Meta, or Google, or Microsoft, but let's be clear: Ingesting works for the purposes of generative AI is not \"piracy\". If you limit who can read works based only on who can pay for licenses, then you're saying you want only the richest companies in the world to have access to this technology.</p><p>It's counter to the entire point of copyright, which is to promote the arts and sciences.</p><p><a href=\"https://babka.social/tags/Copyright\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Copyright</span></a> <a href=\"https://babka.social/tags/AI\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>AI</span></a> <a href=\"https://babka.social/tags/LLM\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>LLM</span></a></p>",
+      "sentiment": 0,
+      "filtered": [],
+      "favouritesCount": 0,
+      "url": "https://babka.social/@serge/113977339184289741",
+      "mentions": [],
+      "inReplyToId": null,
+      "tags": [
+        {
+          "name": "copyright",
+          "url": "https://mastodon.au/tags/copyright"
+        },
+        {
+          "name": "ai",
+          "url": "https://mastodon.au/tags/ai"
+        },
+        {
+          "name": "llm",
+          "url": "https://mastodon.au/tags/llm"
+        }
+      ],
+      "visibility": "public",
+      "inReplyToAccountId": null,
+      "repliesCount": 0,
+      "editedAt": null,
+      "reblog": null,
+      "spoilerText": "",
+      "account": {
+        "fields": [
+          {
+            "name": "Pronouns",
+            "value": "he/him",
+            "verifiedAt": null
+          },
+          {
+            "name": "Proud",
+            "value": "Jew",
+            "verifiedAt": null
+          },
+          {
+            "name": "Lifelong",
+            "value": "Geek",
+            "verifiedAt": null
+          }
+        ],
+        "avatar": "https://o.mastodon.au/cache/accounts/avatars/109/371/277/716/595/549/original/361606d76a3a59a8.jpeg",
+        "createdAt": "2022-11-15T00:00:00.000Z",
+        "headerStatic": "https://o.mastodon.au/cache/accounts/headers/109/371/277/716/595/549/original/bdcad144f89db6e5.jpeg",
+        "statusesCount": 15881,
+        "bot": false,
+        "indexable": false,
+        "id": "109371277716595549",
+        "url": "https://babka.social/@serge",
+        "avatarStatic": "https://o.mastodon.au/cache/accounts/avatars/109/371/277/716/595/549/original/361606d76a3a59a8.jpeg",
+        "lastStatusAt": "2025-02-10",
+        "locked": true,
+        "followersCount": 2371,
+        "header": "https://o.mastodon.au/cache/accounts/headers/109/371/277/716/595/549/original/bdcad144f89db6e5.jpeg",
+        "hideCollections": false,
+        "username": "serge",
+        "group": false,
+        "acct": "serge@babka.social",
+        "followingCount": 1155,
+        "displayName": "Serge from Babka",
+        "emojis": [],
+        "note": "<p>I run Babka, a Jewish online space that includes a Mastodon instance. All about providing a safe place for Jews to live authentic online lives.</p><p><a href=\"https://babka.social/tags/Jewdiverse\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Jewdiverse</span></a> <a href=\"https://babka.social/tags/Mazeldon\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Mazeldon</span></a></p>",
+        "uri": "https://babka.social/users/serge",
+        "discoverable": true
+      },
+      "mediaAttachments": [],
+      "language": "en",
+      "reblogsCount": 0,
+      "emojis": [],
+      "card": null,
+      "uri": "https://babka.social/users/serge/statuses/113977339184289741",
+      "poll": null
+    },
+    "@version": "1",
+    "@timestamp": "2025-02-10T02:56:32.911526782Z",
+    "doc_as_upsert": true
+  },
+  {
+    "doc": {
+      "sensitive": false,
+      "createdAt": "2025-02-10T02:55:28.000Z",
+      "content": "<p><a href=\"https://lingo.lol/tags/Monsterdon\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>Monsterdon</span></a> 💪 🪐 🌌 💀 😱 </p><p>So Evil Lyn just has servants who carry mid-to-large props so they can hand them to her at the appropriate time, and take them back when she's done with them?</p>",
+      "sentiment": 0.07017543859649122,
+      "filtered": [],
+      "favouritesCount": 0,
+      "url": "https://lingo.lol/@amyfou/113977336051262302",
+      "mentions": [],
+      "inReplyToId": null,
+      "tags": [
+        {
+          "name": "monsterdon",
+          "url": "https://mastodon.au/tags/monsterdon"
+        }
+      ],
+      "visibility": "public",
+      "inReplyToAccountId": null,
+      "repliesCount": 0,
+      "editedAt": null,
+      "reblog": null,
+      "spoilerText": "",
+      "account": {
+        "fields": [],
+        "avatar": "https://o.mastodon.au/cache/accounts/avatars/109/321/811/420/418/919/original/65e487c6311d2ef0.jpg",
+        "createdAt": "2022-11-05T00:00:00.000Z",
+        "headerStatic": "https://o.mastodon.au/cache/accounts/headers/109/321/811/420/418/919/original/5655f88b849ecfd9.jpg",
+        "statusesCount": 555,
+        "bot": false,
+        "indexable": false,
+        "id": "109321811420418919",
+        "url": "https://lingo.lol/@amyfou",
+        "avatarStatic": "https://o.mastodon.au/cache/accounts/avatars/109/321/811/420/418/919/original/65e487c6311d2ef0.jpg",
+        "lastStatusAt": "2025-02-10",
+        "locked": false,
+        "followersCount": 2186,
+        "header": "https://o.mastodon.au/cache/accounts/headers/109/321/811/420/418/919/original/5655f88b849ecfd9.jpg",
+        "hideCollections": false,
+        "username": "amyfou",
+        "group": false,
+        "acct": "amyfou@lingo.lol",
+        "followingCount": 2598,
+        "displayName": "AmyFou 🕊️",
+        "emojis": [],
+        "note": "<p>I am a weird, white, cis-het <a href=\"https://lingo.lol/tags/linguist\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>linguist</span></a> who loves all of the <a href=\"https://lingo.lol/tags/animals\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>animals</span></a>, who has two <a href=\"https://lingo.lol/tags/dogs\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>dogs</span></a> now and has had lots of dogs over the years, and who really likes <a href=\"https://lingo.lol/tags/linguistics\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>linguistics</span></a> and <a href=\"https://lingo.lol/tags/languages\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>languages</span></a>.  I work with an <a href=\"https://lingo.lol/tags/IndigenousLanguage\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>IndigenousLanguage</span></a> community in the US on developing <a href=\"https://lingo.lol/tags/languageTech\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>languageTech</span></a>.  I am learning to improve my <a href=\"https://lingo.lol/tags/coding\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>coding</span></a> and I want to know everything about your languages and your <a href=\"https://lingo.lol/tags/pets\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>pets</span></a>.  Also a big fan of you know, <a href=\"https://lingo.lol/tags/nature\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>nature</span></a>, and not being a fascist.  It's not my server so I save my data here for only *2 weeks*.</p>",
+        "uri": "https://lingo.lol/users/amyfou",
+        "discoverable": true
+      },
+      "mediaAttachments": [],
+      "language": "en",
+      "reblogsCount": 0,
+      "emojis": [],
+      "card": null,
+      "uri": "https://lingo.lol/users/amyfou/statuses/113977336051262302",
+      "poll": null
+    },
+    "@version": "1",
+    "@timestamp": "2025-02-10T02:55:32.487143892Z",
+    "doc_as_upsert": true
+  },
+  {
+    "doc": {
+      "sensitive": false,
+      "createdAt": "2025-02-10T02:56:02.000Z",
+      "content": "<p>Landmark Mall, right next to Three Pines mall, right next to Lone Pine Mall</p><p><a href=\"https://mastodon.murkworks.net/tags/monsterdon\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>monsterdon</span></a> <a href=\"https://mastodon.murkworks.net/tags/MastersOfTheUniverse\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>MastersOfTheUniverse</span></a></p>",
+      "sentiment": 0,
+      "filtered": [],
+      "favouritesCount": 0,
+      "url": "https://mastodon.murkworks.net/@moira/113977338247274618",
+      "mentions": [],
+      "inReplyToId": null,
+      "tags": [
+        {
+          "name": "monsterdon",
+          "url": "https://mastodon.au/tags/monsterdon"
+        },
+        {
+          "name": "mastersoftheuniverse",
+          "url": "https://mastodon.au/tags/mastersoftheuniverse"
+        }
+      ],
+      "visibility": "public",
+      "inReplyToAccountId": null,
+      "repliesCount": 0,
+      "editedAt": null,
+      "reblog": null,
+      "spoilerText": "",
+      "account": {
+        "fields": [
+          {
+            "name": "Stories:",
+            "value": "<a href=\"https://archiveofourown.org/works/16287893/chapters/38092361\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">archiveofourown.org/works/1628</span><span class=\"invisible\">7893/chapters/38092361</span></a>",
+            "verifiedAt": null
+          },
+          {
+            "name": "Printable things:",
+            "value": "<a href=\"https://www.thingiverse.com/solarbird/designs\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">thingiverse.com/solarbird/desi</span><span class=\"invisible\">gns</span></a>",
+            "verifiedAt": null
+          },
+          {
+            "name": "Github:",
+            "value": "<a href=\"https://github.com/solarbirdy\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">github.com/solarbirdy</span><span class=\"invisible\"></span></a>",
+            "verifiedAt": "2025-02-05T04:18:31.115+00:00"
+          },
+          {
+            "name": "Federated Blog:",
+            "value": "<a href=\"https://solarbird.net/blog\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">solarbird.net/blog</span><span class=\"invisible\"></span></a>",
+            "verifiedAt": null
+          }
+        ],
+        "avatar": "https://o.mastodon.au/cache/accounts/avatars/109/363/754/151/124/376/original/f7ce2a616b6617ba.png",
+        "createdAt": "2022-11-06T00:00:00.000Z",
+        "headerStatic": "https://o.mastodon.au/cache/accounts/headers/109/363/754/151/124/376/original/14af3bf8670e9ad9.jpg",
+        "statusesCount": 64004,
+        "bot": false,
+        "indexable": true,
+        "id": "109363754151124376",
+        "url": "https://mastodon.murkworks.net/@moira",
+        "avatarStatic": "https://o.mastodon.au/cache/accounts/avatars/109/363/754/151/124/376/original/f7ce2a616b6617ba.png",
+        "lastStatusAt": "2025-02-10",
+        "locked": false,
+        "followersCount": 1710,
+        "header": "https://o.mastodon.au/cache/accounts/headers/109/363/754/151/124/376/original/14af3bf8670e9ad9.jpg",
+        "hideCollections": false,
+        "username": "moira",
+        "group": false,
+        "acct": "moira@mastodon.murkworks.net",
+        "followingCount": 916,
+        "displayName": "Solarbird :flag_cascadia:",
+        "emojis": [
+          {
+            "url": "https://o.mastodon.au/cache/custom_emojis/images/000/093/777/original/f8652582ac20d0e5.png",
+            "staticUrl": "https://o.mastodon.au/cache/custom_emojis/images/000/093/777/static/f8652582ac20d0e5.png",
+            "shortcode": "flag_cascadia",
+            "visibleInPicker": true
+          }
+        ],
+        "note": "<p>Bluesky users! Read this <a href=\"http://mastodon.murkworks.net/@moira/113647708264029959\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">http://</span><span class=\"ellipsis\">mastodon.murkworks.net/@moira/</span><span class=\"invisible\">113647708264029959</span></a></p><p>She/her ex-software dev now writing words for money, fun, or survival. I write short here, and long on my Fediblog.</p><p>Republicans have worked to kill off me and mine my whole life, so if you hate \"Dems\" or \"libs\" more than actual fash? DNI+GFY.</p><p>I also make bike maps and 3D printables. Want to support me or my Mastodon instance? <a href=\"http://patreon.com/solarbird\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">http://</span><span class=\"\">patreon.com/solarbird</span><span class=\"invisible\"></span></a></p><p><a href=\"https://justmytoots.com/@moira@mastodon.murkworks.net\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"ellipsis\">justmytoots.com/@moira@mastodo</span><span class=\"invisible\">n.murkworks.net</span></a></p>",
+        "uri": "https://mastodon.murkworks.net/users/moira",
+        "discoverable": true
+      },
+      "mediaAttachments": [],
+      "language": "en",
+      "reblogsCount": 0,
+      "emojis": [],
+      "card": null,
+      "uri": "https://mastodon.murkworks.net/users/moira/statuses/113977338247274618",
+      "poll": null
+    },
+    "@version": "1",
+    "@timestamp": "2025-02-10T02:56:06.208301320Z",
+    "doc_as_upsert": true
+  },
+  {
+    "doc": {
+      "sensitive": true,
+      "createdAt": "2025-02-10T02:55:54.000Z",
+      "content": "<p>I noticed something interesting about the old paintings of Nanaki and Seto and others - none of them show Nanaki's right eye</p><p>I don't remember it being mentioned anywhere what happened to his right eye. I had just assumed Hojo was responsible, but these paintings make me wonder if maybe he was born with a messed up eye, or it got hurt when he was still really young, or something</p>",
+      "sentiment": 0,
+      "filtered": [],
+      "favouritesCount": 0,
+      "url": "https://packmates.org/@noxypaws/113977337728838296",
+      "mentions": [],
+      "inReplyToId": null,
+      "tags": [],
+      "visibility": "public",
+      "inReplyToAccountId": null,
+      "repliesCount": 0,
+      "editedAt": null,
+      "reblog": null,
+      "spoilerText": "ffvii rebirth cosmo canyon/nanaki spoilers",
+      "account": {
+        "fields": [
+          {
+            "name": "Avatar Artist",
+            "value": "<a href=\"https://www.furaffinity.net/user/kola/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"\">furaffinity.net/user/kola/</span><span class=\"invisible\"></span></a>",
+            "verifiedAt": null
+          },
+          {
+            "name": "Header Artist",
+            "value": "<a href=\"https://www.furaffinity.net/user/heatherwolf/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"ellipsis\">furaffinity.net/user/heatherwo</span><span class=\"invisible\">lf/</span></a>",
+            "verifiedAt": null
+          },
+          {
+            "name": "my FA",
+            "value": "<a href=\"https://www.furaffinity.net/user/noxal/\" rel=\"nofollow noopener\" translate=\"no\" target=\"_blank\"><span class=\"invisible\">https://www.</span><span class=\"\">furaffinity.net/user/noxal/</span><span class=\"invisible\"></span></a>",
+            "verifiedAt": null
+          },
+          {
+            "name": "my Telegram",
+            "value": "<span class=\"h-card\" translate=\"no\"><a href=\"https://packmates.org/@noxypaws\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>noxypaws</span></a></span>",
+            "verifiedAt": null
+          }
+        ],
+        "avatar": "https://o.mastodon.au/cache/accounts/avatars/109/638/715/130/411/383/original/14ad27c13f85a7f4.png",
+        "createdAt": "2023-01-05T00:00:00.000Z",
+        "headerStatic": "https://o.mastodon.au/cache/accounts/headers/109/638/715/130/411/383/original/915abc67995d913f.png",
+        "statusesCount": 12086,
+        "bot": false,
+        "indexable": false,
+        "id": "109638715130411383",
+        "url": "https://packmates.org/@noxypaws",
+        "avatarStatic": "https://o.mastodon.au/cache/accounts/avatars/109/638/715/130/411/383/original/14ad27c13f85a7f4.png",
+        "lastStatusAt": "2025-02-10",
+        "locked": true,
+        "followersCount": 395,
+        "header": "https://o.mastodon.au/cache/accounts/headers/109/638/715/130/411/383/original/915abc67995d913f.png",
+        "hideCollections": true,
+        "username": "noxypaws",
+        "group": false,
+        "acct": "noxypaws@packmates.org",
+        "followingCount": 654,
+        "displayName": "Noxy 🐾",
+        "emojis": [],
+        "note": "<p>he/him</p><p>No minors. NSFW. I (with CWs) post and boost adult content, including feral and feral/anthro furry porn, and foot fetish material.</p><p>Feral dhole, feet/(hind)paw worshipper, car appreciator, mechanical watch wearer, cloud engineer, framework/nixos/plasma6 user, occasional synth/guitar/handpan player, car/track enthusiast, wobbly</p><p>ACAB<br>BLM<br>Cop City must never be built<br>Billionaires must be exterminated<br>Workers deserve ownership of their work<br>Nonhumans &gt;= humans</p><p>Mated to <span class=\"h-card\" translate=\"no\"><a href=\"https://packmates.org/@auspex\" class=\"u-url mention\" rel=\"nofollow noopener\" target=\"_blank\">@<span>auspex</span></a></span> &lt;3</p><p><a href=\"https://packmates.org/tags/nobot\" class=\"mention hashtag\" rel=\"nofollow noopener\" target=\"_blank\">#<span>nobot</span></a></p>",
+        "uri": "https://packmates.org/users/noxypaws",
+        "discoverable": true
+      },
+      "mediaAttachments": [
+        {
+          "textUrl": null,
+          "id": "113977337836090033",
+          "blurhash": "U59?UY$L0fSNIVxZoft6xBxZkCRkNHoJxZR*",
+          "remoteUrl": "https://fedimedia.packmates.org/media_attachments/files/113/977/326/422/752/573/original/ff9eedb39e93cbc9.png",
+          "previewRemoteUrl": null,
+          "url": "https://o.mastodon.au/cache/media_attachments/files/113/977/337/836/090/033/original/ea430996d97e6bba.png",
+          "previewUrl": "https://o.mastodon.au/cache/media_attachments/files/113/977/337/836/090/033/small/ea430996d97e6bba.png",
+          "meta": {
+            "original": {
+              "size": "3840x2160",
+              "width": 3840,
+              "aspect": 1.7777777777777777,
+              "height": 2160
+            },
+            "small": {
+              "size": "640x360",
+              "width": 640,
+              "aspect": 1.7777777777777777,
+              "height": 360
+            }
+          },
+          "description": null,
+          "type": "image"
+        },
+        {
+          "textUrl": null,
+          "id": "113977338084634741",
+          "blurhash": "U16%QT12S^Eh1IEh=d$j1J-9-AR+I=$iR+J8",
+          "remoteUrl": "https://fedimedia.packmates.org/media_attachments/files/113/977/326/538/402/696/original/7b8455e284c7c2e6.png",
+          "previewRemoteUrl": null,
+          "url": "https://o.mastodon.au/cache/media_attachments/files/113/977/338/084/634/741/original/7b239a3375150373.png",
+          "previewUrl": "https://o.mastodon.au/cache/media_attachments/files/113/977/338/084/634/741/small/7b239a3375150373.png",
+          "meta": {
+            "original": {
+              "size": "3840x2160",
+              "width": 3840,
+              "aspect": 1.7777777777777777,
+              "height": 2160
+            },
+            "small": {
+              "size": "640x360",
+              "width": 640,
+              "aspect": 1.7777777777777777,
+              "height": 360
+            }
+          },
+          "description": null,
+          "type": "image"
+        },
+        {
+          "textUrl": null,
+          "id": "113977338372063682",
+          "blurhash": "U579z;,;1J5-KOJ8wd$h$isTWpkBWVWWWCs.",
+          "remoteUrl": "https://fedimedia.packmates.org/media_attachments/files/113/977/329/426/478/967/original/b58c8f0c3ffd6128.png",
+          "previewRemoteUrl": null,
+          "url": "https://o.mastodon.au/cache/media_attachments/files/113/977/338/372/063/682/original/381716d5068886f9.png",
+          "previewUrl": "https://o.mastodon.au/cache/media_attachments/files/113/977/338/372/063/682/small/381716d5068886f9.png",
+          "meta": {
+            "original": {
+              "size": "3840x2160",
+              "width": 3840,
+              "aspect": 1.7777777777777777,
+              "height": 2160
+            },
+            "small": {
+              "size": "640x360",
+              "width": 640,
+              "aspect": 1.7777777777777777,
+              "height": 360
+            }
+          },
+          "description": null,
+          "type": "image"
+        }
+      ],
+      "language": "en",
+      "reblogsCount": 0,
+      "emojis": [],
+      "card": null,
+      "uri": "https://packmates.org/users/noxypaws/statuses/113977337728838296",
+      "poll": null
+    },
+    "@version": "1",
+    "@timestamp": "2025-02-10T02:56:07.247592205Z",
+    "doc_as_upsert": true
+  }
+]
