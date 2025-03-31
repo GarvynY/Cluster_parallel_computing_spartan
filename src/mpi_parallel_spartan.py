@@ -35,10 +35,12 @@ size = comm.Get_size()
 start_time = MPI.Wtime()
 
 # fixed params
-CHUNK_SIZE = 20 * 1024 * 1024  # 4MB
-DATA_PATH = "data/medium-16m.ndjson"
+# CHUNK_SIZE = 20 * 1024 * 1024  # 4MB
+# DATA_PATH = "data/medium-16m.ndjson"
 # CHUNK_SIZE = 20 * 1024  # 20kb
 # DATA_PATH = "data/mastodon-106k.ndjson"
+CHUNK_SIZE = 4 * 1024 * 1024 * 1024  # 4GB
+DATA_PATH = "large-144G.ndjson"
 
 # output stream to utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -80,8 +82,9 @@ def send_data(data_chunk):
         start = (serial_num - 1) * chunk_size
         # end pointer
         end = len(data_chunk) if serial_num == num_workers else serial_num * chunk_size
-        comm.send(data_chunk[start:end], dest=serial_num, tag=1)
-        # print(f"Sent {len(data_chunk[start:end])} lines to Rank {serial_num}")
+        cur_data = data_chunk[start:end]
+        print(f"Rank 0 sending {len(cur_data)} lines to Rank {serial_num}")
+        comm.send(cur_data, dest=serial_num, tag=1)
 
 
 def process_and_aggregate():
@@ -90,9 +93,11 @@ def process_and_aggregate():
         # print(f"Rank {rank} receiving data......")
         data_chunk = comm.recv(source=0, tag=1)
         if data_chunk is None:
+            print(f"Rank {rank} received termination signal.")
             break  # done
 
         # print(f"Rank {rank} received {len(data_chunk)} entries")
+        # comm.barrier()
 
         user_sentiments = {}  # user sentiment
         hour_sentiments = {}  # time sentiment（hour）
@@ -227,6 +232,7 @@ if rank == 0:
 
 # Use barrier to synchronize all ranks before printing final execution time
 comm.barrier()
+MPI.Finalize()
 
 # Final execution time
 end_time = MPI.Wtime()
