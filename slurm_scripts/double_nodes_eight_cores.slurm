@@ -1,15 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=mastodon_two_nodes
-#SBATCH --nodes=2
-#SBATCH --ntasks=8
-#SBATCH --ntasks-per-node=4
-#SBATCH --cpus-per-task=1
-#SBATCH --time=24:00:00
-#SBATCH --output=mastodon_two_nodes_%j.out
-#SBATCH --mem=64G
+#SBATCH --job-name=2_4v       # 任务名称
+#SBATCH --nodes=2                  # 申请 2 个计算节点
+#SBATCH --ntasks-per-node=4        # 每个节点运行 4 个 MPI 任务 (共 8 进程)
+#SBATCH --cpus-per-task=1          # 每个 MPI 任务使用 1 个 CPU 核
+#SBATCH --time=01:00:00            # 运行时间上限 1 小时
+#SBATCH --mem=32G                  # 申请 32GB 内存
+#SBATCH --output=mpi_%j.log     # 标准输出日志
+#SBATCH --error=mpi_%j.log       # 标准错误日志
 
-# 加载必要的模块
-module load Python/3.8.2
-
-# 运行Python程序
-python mastodon_analysis.py /data/gpfs/projects/COMP90024/mastodon-144Gb.ndjson --processes 8
+srun python mpi_parallel_spartan_16m.py

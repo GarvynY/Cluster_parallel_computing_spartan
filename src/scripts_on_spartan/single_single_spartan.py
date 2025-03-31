@@ -3,12 +3,14 @@ import json
 import sys
 import io
 from mpi4py import MPI
+from datetime import datetime
+import os
 
 """
   @Author: Garvyn-Yuan
-  @FIle Name: mpi_parallel_spartan.py
+  @FIle Name: 
   @Contact: 228077gy@gmail.com
-  @Description: cluster computing on spartan ; Sentiment analysis on a large dataset using MPI
+  @Description: single_node single core parallel spartan
   @Date: File created in 15:00-2025/3/29
   @Modified by: Garvyn 3/30
   @Version: V1.0
@@ -20,7 +22,7 @@ func:
 3. [param - tag : match send and recv ]
    [param - dest : destination ]
    [param - source : source of data]
-   
+
 mechanism: 
     send wait for recv, but if the data is small, will optimize to put it in the cache and return send, if recv starts
 first, it will wait for send . 
@@ -35,12 +37,12 @@ size = comm.Get_size()
 start_time = MPI.Wtime()
 
 # fixed params
-# CHUNK_SIZE = 20 * 1024 * 1024  # 4MB
-# DATA_PATH = "data/medium-16m.ndjson"
+CHUNK_SIZE = 4 * 1024 * 1024  # 4MB
+DATA_PATH = "medium-16m.ndjson"
 # CHUNK_SIZE = 20 * 1024  # 20kb
 # DATA_PATH = "data/mastodon-106k.ndjson"
-CHUNK_SIZE = 4 * 1024 * 1024 * 1024  # 4GB
-DATA_PATH = "large-144G.ndjson"
+# CHUNK_SIZE = 4 * 1024 * 1024 * 1024  # 4GB
+# DATA_PATH = "large-144G.ndjson"
 
 # output stream to utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -172,22 +174,43 @@ def gather_results():
     happiest_hours = sorted_hours[:5]
     saddest_hours = sorted_hours[-5:]
 
-    # res
-    print("\nTop 5 Happiest Users:")
-    for (user_id, username), score in happiest_users:
-        print(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}")
+    # 生成文件名: large-144G.ndjson_2025-03-31_17-30-00_results.txt
+    output_filename = f"{os.path.basename(DATA_PATH)}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_results.txt"
 
-    print("\nTop 5 Saddest Users:")
-    for (user_id, username), score in saddest_users:
-        print(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}")
+    with open(output_filename, "w", encoding="utf-8") as f:
+        f.write("Top 5 Happiest Users:\n")
+        for (user_id, username), score in happiest_users:
+            f.write(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}\n")
 
-    print("\nTop 5 Happiest Hours:")
-    for hour, score in happiest_hours:
-        print(f"{hour} - Sentiment Score: {score:.2f}")
+        f.write("\nTop 5 Saddest Users:\n")
+        for (user_id, username), score in saddest_users:
+            f.write(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}\n")
 
-    print("\nTop 5 Saddest Hours:")
-    for hour, score in saddest_hours:
-        print(f"{hour} - Sentiment Score: {score:.2f}")
+        f.write("\nTop 5 Happiest Hours:\n")
+        for hour, score in happiest_hours:
+            f.write(f"{hour} - Sentiment Score: {score:.2f}\n")
+
+        f.write("\nTop 5 Saddest Hours:\n")
+        for hour, score in saddest_hours:
+            f.write(f"{hour} - Sentiment Score: {score:.2f}\n")
+
+    print(f"Results saved to {output_filename}")
+    # # res
+    # print("\nTop 5 Happiest Users:")
+    # for (user_id, username), score in happiest_users:
+    #     print(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}")
+    #
+    # print("\nTop 5 Saddest Users:")
+    # for (user_id, username), score in saddest_users:
+    #     print(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}")
+    #
+    # print("\nTop 5 Happiest Hours:")
+    # for hour, score in happiest_hours:
+    #     print(f"{hour} - Sentiment Score: {score:.2f}")
+    #
+    # print("\nTop 5 Saddest Hours:")
+    # for hour, score in saddest_hours:
+    #     print(f"{hour} - Sentiment Score: {score:.2f}")
 
 
 # # version 1 -- run test
@@ -208,33 +231,84 @@ def gather_results():
 
 
 # version 2: main process and time stat
-if rank == 0:
+if size == 1:
+    # 单进程模式
+    print("Running in single-process mode.")
+    start_time = MPI.Wtime()
+
+    # 读取数据并直接处理
     read_start = MPI.Wtime()
-    load_data_chunk_stream()
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        data_chunk = f.readlines()
     read_end = MPI.Wtime()
-    print(f"Data reading and distribution time: {read_end - read_start:.2f} seconds")
+    print(f"Data reading time: {read_end - read_start:.2f} seconds")
 
-# Timing for processing and aggregation by all ranks
-processing_start = MPI.Wtime()
-if rank != 0:
-    process_and_aggregate()
-processing_end = MPI.Wtime()
-if rank != 0:
-    print(f"Rank {rank} processing time: {processing_end - processing_start:.2f} seconds")
+    # 处理数据
+    processing_start = MPI.Wtime()
+    user_sentiments = {}
+    hour_sentiments = {}
 
-# Final time after gathering results
-gather_start = MPI.Wtime()
-if rank == 0:
-    gather_results()
-gather_end = MPI.Wtime()
-if rank == 0:
-    print(f"Results gathering time: {gather_end - gather_start:.2f} seconds")
+    for line in data_chunk:
+        try:
+            data = json.loads(line).get("doc", {})
+            sentiment = data.get("sentiment", 0.00)
+            user_id = data.get("account", {}).get("id", "")
+            username = data.get("account", {}).get("username", "")
+            created_at = data.get("createdAt", None)
 
-# Use barrier to synchronize all ranks before printing final execution time
-comm.barrier()
-MPI.Finalize()
+            if not user_id or not username or sentiment is None:
+                continue
 
-# Final execution time
-end_time = MPI.Wtime()
-if rank == 0:
+            user_key = (user_id, username)
+            user_sentiments[user_key] = user_sentiments.get(user_key, 0.0) + sentiment
+
+            if created_at:
+                hour_key = created_at[:13]  # eg: "2023-11-23T15"
+                hour_sentiments[hour_key] = hour_sentiments.get(hour_key, 0.0) + sentiment
+        except json.JSONDecodeError:
+            continue
+        except Exception as e:
+            print(f"Error processing line: {e}")
+            continue
+
+    processing_end = MPI.Wtime()
+    print(f"Processing time: {processing_end - processing_start:.2f} seconds")
+
+    # 结果排序
+    gather_start = MPI.Wtime()
+    sorted_users = sorted(user_sentiments.items(), key=lambda x: x[1], reverse=True)
+    happiest_users = sorted_users[:5]
+    saddest_users = sorted_users[-5:]
+
+    sorted_hours = sorted(hour_sentiments.items(), key=lambda x: x[1], reverse=True)
+    happiest_hours = sorted_hours[:5]
+    saddest_hours = sorted_hours[-5:]
+
+    gather_end = MPI.Wtime()
+    print(f"Gathering results time: {gather_end - gather_start:.2f} seconds")
+
+    # 输出到文件
+    output_filename = f"{os.path.basename(DATA_PATH)}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_results.txt"
+    with open(output_filename, "w", encoding="utf-8") as f:
+        f.write("Top 5 Happiest Users:\n")
+        for (user_id, username), score in happiest_users:
+            f.write(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}\n")
+
+        f.write("\nTop 5 Saddest Users:\n")
+        for (user_id, username), score in saddest_users:
+            f.write(f"User ID: {user_id}, Username: {username}, Sentiment Score: {score:.2f}\n")
+
+        f.write("\nTop 5 Happiest Hours:\n")
+        for hour, score in happiest_hours:
+            f.write(f"{hour} - Sentiment Score: {score:.2f}\n")
+
+        f.write("\nTop 5 Saddest Hours:\n")
+        for hour, score in saddest_hours:
+            f.write(f"{hour} - Sentiment Score: {score:.2f}\n")
+
+    print(f"Results saved to {output_filename}")
+
+    end_time = MPI.Wtime()
     print(f"Total execution time: {end_time - start_time:.2f} seconds")
+
+

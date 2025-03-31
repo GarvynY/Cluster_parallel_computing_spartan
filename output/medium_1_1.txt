@@ -1,0 +1,36 @@
+1_1
+
+
+Top 5 Happiest Users:
+User ID: 109321811420418919, Username: amyfou, Sentiment Score: 2.39
+User ID: 110542985111474642, Username: GolfDigest, Sentiment Score: 1.84
+User ID: 109734012824774037, Username: Eagles, Sentiment Score: 1.50
+User ID: 110149910031220379, Username: stellarskylark, Sentiment Score: 1.33
+User ID: 109893804991977967, Username: NFL_Memes, Sentiment Score: 1.09
+
+Top 5 Saddest Users:
+User ID: 112605820244754466, Username: PhoenixSerenity, Sentiment Score: -0.86
+User ID: 109363139681819635, Username: BostonBibliophile, Sentiment Score: -0.87
+User ID: 112202977476831380, Username: byteseu, Sentiment Score: -0.95
+User ID: 109977447109691181, Username: missladyartemis, Sentiment Score: -1.43
+User ID: 109384731896498258, Username: morachbeag, Sentiment Score: -1.59
+
+Top 5 Happiest Hours:
+2025-02-10T02 - Sentiment Score: 15.10
+2025-02-10T01 - Sentiment Score: 6.48
+2025-02-09T02 - Sentiment Score: 0.30
+2025-02-09T00 - Sentiment Score: 0.10
+2025-02-09T22 - Sentiment Score: 0.08
+
+Top 5 Saddest Hours:
+2025-02-09T19 - Sentiment Score: -0.13
+2025-02-09T18 - Sentiment Score: -0.14
+2025-02-08T23 - Sentiment Score: -0.16
+2025-02-10T00 - Sentiment Score: -0.45
+2025-02-09T23 - Sentiment Score: -1.79
+Running in single-process mode.
+Data reading time: 0.06 seconds
+Processing time: 0.13 seconds
+Gathering results time: 0.00 seconds
+Results saved to medium-16m.ndjson_2025-03-31_18-28-52_results.txt
+Total execution time: 0.20 seconds
