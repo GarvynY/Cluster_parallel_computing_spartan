@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=mastodon_analysis
-#SBATCH --output=mastodon_analysis.out
-#SBATCH --error=mastodon_analysis.err
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=4
+#SBATCH --output=mastodon_analysis_%j.out
+#SBATCH --error=mastodon_analysis_%j.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=8
 #SBATCH --time=04:00:00
 #SBATCH --mem=8G
 

@@ -1,0 +1,39 @@
+Rank 1: Processing time: 247.96 seconds
+Rank 3: Processing time: 250.94 seconds
+Rank 0: Processing time: 251.00 seconds
+Rank 2: Processing time: 254.91 seconds
+Rank 4: Processing time: 261.75 seconds
+Rank 6: Processing time: 261.88 seconds
+Rank 7: Processing time: 263.95 seconds
+Rank 5: Processing time: 266.75 seconds
+
+5 Happiest Hours:
+2025-01-01 00:00 with sentiment score 206.15209972304456
+2024-12-31 23:00 with sentiment score 187.465476632202
+2025-01-01 05:00 with sentiment score 135.92521743446838
+2024-12-24 22:00 with sentiment score 117.2863136120121
+2024-12-25 15:00 with sentiment score 114.60195453225167
+
+5 Saddest Hours:
+2024-11-06 07:00 with sentiment score -373.76724797383497
+2024-09-11 01:00 with sentiment score -305.5760669374102
+2025-01-30 17:00 with sentiment score -256.5684250419817
+2025-01-30 18:00 with sentiment score -226.90971970072644
+2025-02-03 16:00 with sentiment score -223.83348768435087
+
+5 Happiest Users:
+gameoflife with sentiment score 9105.741942204433
+EmojiAquarium with sentiment score 2605.0192646105183
+TheFigen_ with sentiment score 2541.4742243891906
+choochoo with sentiment score 1978.7847677692096
+hnbot with sentiment score 1914.9517912927743
+
+5 Saddest Users:
+realTuckFrumper with sentiment score -9093.795561168006
+uavideos with sentiment score -5901.960347560852
+TheHindu with sentiment score -5710.722600655697
+uutisbot with sentiment score -4066.138170138108
+MissingYou with sentiment score -3341.603338119541
+
+Data aggregation time: 0.69 seconds
+Total execution time: 267.79 seconds

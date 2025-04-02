@@ -22,7 +22,7 @@ def main():
     size = comm.Get_size()
 
     # 每个进程处理文件的一部分
-    filename = 'mastodon-144Gb.ndjson'
+    filename = 'large-144G.ndjson'
     chunk_size = 1024 * 1024 * 100  # 每次读取100MB
 
     hour_sentiment = defaultdict(float)
