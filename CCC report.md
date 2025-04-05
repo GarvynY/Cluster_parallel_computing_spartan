@@ -187,7 +187,6 @@ def parse_line(line):
     - Dynamically allocate data chunks (e.g., root process distributes rows on-demand).
     - Use `MPI_Scatterv` instead of fixed partitioning.
 
----
 
 ### **Conclusion**
 
