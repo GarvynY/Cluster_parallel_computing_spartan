@@ -1,145 +1,101 @@
-# CCC report
+# Cluster and Cloud Computing
 
-**最终提交与交付**
+​              			                                                     **Assignment I Report**
 
-你需要撰写一份简短的报告（不超过4页！），说明如何调用应用程序，包括提交作业到SPARTAN的脚本、并行化代码的方法，以及在不同节点和核心数量下的性能差异。报告中应包含上述实际结果表格，以及一张图表（如条形图）显示在1节点1核心、1节点8核心和2节点8核心配置下的执行时间。你还应将结果与阿姆达尔定律（Amdahl’s law）联系起来，描述潜在的性能变化。
+## Authors
 
-### 程序调用和运行过程
-(脚本运行和代码调试过程)
-### slurm脚本
+​									 [**yuan.gao.2@student.unimelb.edu.au**](mailto:yuan.gao.2@student.unimelb.edu.au)                                                            
 
-### 代码方法和构建过程：
+​								          [**yzhao5067@student.unimelb.edu.au**](mailto:yuan.gao.2@student.unimelb.edu.au)
 
-### **Data Partitioning Strategy**
+## **Login and Initialization**
 
-### **Objective**
+1. use **ssh-key** to login without password, copy public key to the remote host and set ssh config file and alias command locally to login by simply command ‘spartan’.
+2. Create shell scripts initial_env.sh and set alias command ‘alias inienv='source /home/ygao3631/initial_env.sh’ in ~/.bashrc ’to **conveniently initialize each time**, The function includes module purge and Load spartan & foss/2022a & Python/3.10.4 & Scipy  
 
-Distribute the large NDJSON file evenly across multiple MPI processes to prevent memory overload on a single process.
+| ![image.png](image.png) | <img src="image%201.png" alt="image.png" style="zoom:150%;" /> |
+| ----------------------- | ------------------------------------------------------------ |
 
-### **Implementation**
+## **The slurm scripts for submitting the job**
 
-- **Byte-Offset Partitioning**: Each process handles a contiguous byte block (not line-based, to avoid splitting JSON records).
-- **Boundary Alignment**: Non-root processes skip the first line to ensure reading starts from a complete JSON record.
+**The final version:**
 
-### **Corresponding Code**
+```bash
+#!/bin/bash
+#SBATCH --job-name=mastodon_analysis
+#SBATCH --output=mastodon_analysis_%j.out
+#SBATCH --error=mastodon_analysis_%j.err
+#SBATCH --nodes=[node_amount]
+#SBATCH --ntasks-per-node=[core_amount]
+#SBATCH --time=04:00:00
+#SBATCH --mem=[memory per-core]
 
-```python
-with open(filename, 'r', encoding='utf-8') as f:
-    # Calculate total file size and byte ranges for each process
-    f.seek(0, 2)  # Move to end of file
-    file_size = f.tell()
-    chunk_size = file_size // size  # Divide bytes equally
-    start = rank * chunk_size
-    end = start + chunk_size if rank != size -1 else file_size  # Last process handles remaining bytes
-
-    f.seek(start)
-    # Non-root processes skip potentially truncated lines
-    if rank != 0:
-        f.readline()  # Key: Align to the start of a complete line
-
+mpiexec -n 8 python mastodon_analysis.py
+# or sun -n 8 python mastodon_analysis.py
 ```
 
-### **Why It Works**
+For different Jobs, edit ‘--nodes=’; ‘--ntasks-per-node=’  to adjust the different circumstances.
 
-- Prevents JSON record truncation (`readline()` ensures starting from a line boundary).
-- Large chunk sizes (100MB-level) minimize frequent I/O operations.
++ **2 nodes ,4 cores for each:** set ‘--nodes=2’; ‘--ntasks-per-node=4’.
 
----
++ **1 node, 8 cores for each:** set ‘--nodes=1’; ‘--ntasks-per-node=8’.
 
-### **2. Parallel Processing and Local Aggregation**
++ **1 node ,1 core for each:** set ‘--nodes=1’ ; ‘--ntasks-per-node=1’.
 
-### **Objective**
+| <img src="/Users/garvyn/Downloads/v3/slurm1.png" alt="slurm1" style="zoom:50%;" /> | <img src="/Users/garvyn/Downloads/v3/slurm3.png" alt="slurm1" style="zoom:50%;" /> | <img src="/Users/garvyn/Downloads/v3/slurm2.png" alt="slurm2" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
-Each process independently calculates sentiment scores for its assigned time windows and users, reducing subsequent communication overhead.
 
-### **Implementation**
 
-- **Local Dictionary Storage**: Uses `defaultdict` to accumulate results per process.
-- **Time Standardization**: Converts timestamps to `YYYY-MM-DD HH:00` format for consistent merging.
+## **Approach to build and parallelize the code**
 
-### **Corresponding Code**
+### From stream-based to File-slicing-based MPI design
 
-```python
-hour_sentiment = defaultdict(float)  # Time-window sentiment scores
-user_sentiment = defaultdict(float)  # User sentiment scores
-
-while pos < end:
-    line = f.readline()
-    if not line:
-        break
-    pos = f.tell()
-    created_at, sentiment, user_id, username = parse_line(line)
-    if all([created_at, sentiment is not None, user_id, username]):
-        try:
-            dt = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
-            hour = dt.strftime('%Y-%m-%d %H:00')  # Standardize to hourly granularity
-            hour_sentiment[hour] += sentiment
-            user_sentiment[username] += sentiment
-        except ValueError:
-            continue  # Skip invalid timestamps
-
-```
-
-### **Why It Works**
-
-- Local aggregation drastically reduces data transfer volume (raw JSON → key-value pairs).
-- Time standardization ensures correct merging of identical windows across processes.
-
----
-
-### **3. Result Aggregation and Global Ranking**
-
-### **Objective**
-
-Combine partial results from all processes to generate global rankings.
-
-### **Implementation**
-
-- **MPI Gather Operation**: The root process (Rank 0) collects dictionaries from all worker processes.
-- **Two-Phase Merging**: First merges time-window scores, then user scores.
-
-### **Corresponding Code**
+- **Stream-based MPI design:** The first try uses send and recv to stream data from rank 0 to other processes. While it gives more control over memory and avoids partial line handling, it’s slower because rank 0 reads the entire file alone and becomes the bottleneck for both I/O and communication. This approach runs well on 16m data but take much more time than expected on 144G data: The second version is less efficient might because rank 0 handles all the file reading, which creates a severe I/O bottleneck. Other ranks must wait for data to be sent, causing idle time. Additionally, the frequent use of send and recv introduces high communication overhead, especially when processing large files like 144GB. This serialized workflow limits parallelism and slows down the entire program.
+- **File-slicing-based MPI design:** The key optimization is replacing centralized streaming with parallel file reading. Each process reads and processes data independently, and only the final results are gathered, making the whole program much faster and more scalable. The second version lets each process read its own part of the file directly using seek, so all ranks process data in parallel. This greatly improves speed by removing the central bottleneck and reducing communication overhead.
+- **Optimization:** Replaced comm.send/recv with direct file slicing using f.seek() ; Let each process handle its own I/O and parsing logic ; Only final aggregation is done on Rank 0 using comm.gather().
 
 ```python
-# Gather partial results from all processes
-all_hour_sentiment = comm.gather(hour_sentiment, root=0)
-all_user_sentiment = comm.gather(user_sentiment, root=0)
+def main():
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
 
-if rank == 0:
-    # Merge time-window scores
-    combined_hour = defaultdict(float)
-    for hs in all_hour_sentiment:  # hs is one process's hour_sentiment
-        for hour, sentiment in hs.items():
-            combined_hour[hour] += sentiment
+    filename = 'large-144G.ndjson'
+    chunk_size = 1024 * 1024 * 100  # 100MB
 
-    # Merge user scores (similar to time-window merging)
-    combined_user = defaultdict(float)
-    for us in all_user_sentiment:
-        for user, sentiment in us.items():
-            combined_user[user] += sentiment
+    hour_sentiment = defaultdict(float)
+    user_sentiment = defaultdict(float)
 
-    # Global ranking (Top 5)
-    happiest_hours = sorted(combined_hour.items(), key=lambda x: x[1], reverse=True)[:5]
-    saddest_hours = sorted(combined_hour.items(), key=lambda x: x[1])[:5]
-    happiest_users = sorted(combined_user.items(), key=lambda x: x[1], reverse=True)[:5]
-    saddest_users = sorted(combined_user.items(), key=lambda x: x[1])[:5]
+    with open(filename, 'r', encoding='utf-8') as f:
+        f.seek(0, 2)
+        file_size = f.tell()
+        chunk_size = file_size // size
+        start = rank * chunk_size
+        end = start + chunk_size if rank != size -1 else file_size
 
+        f.seek(start)
+        if rank != 0:
+            f.readline()
+
+        pos = f.tell()
+        while pos < end:
+            line = f.readline()
+            if not line:
+                break
+            pos = f.tell()
+            created_at, sentiment, user_id, username = parse_line(line)
+            if created_at and sentiment is not None and user_id and username:
+                try:
+                    dt = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                    hour = dt.strftime('%Y-%m-%d %H:00')
+                    hour_sentiment[hour] += sentiment
+                    user_sentiment[username] += sentiment
+                except ValueError:
+                    continue
 ```
 
-### **Why It Works**
-
-- `comm.gather` centralizes distributed results to the root process.
-- The root processes only handles merged dictionaries, not raw data (decouples computation and communication).
-
----
-
-### **4. Fault Tolerance Design**
-
-### **Objective**
-
-Handle dirty data (e.g., malformed JSON, missing fields) without crashing.
-
-### **Key Code**
+- **Fault tolerance Design:** The code include fault tolerance to deal with the dirty data(e.g. malformed JSON, missing fields) with out crashing
 
 ```python
 def parse_line(line):
@@ -157,47 +113,58 @@ def parse_line(line):
 
 ```
 
-### **Logic**
++ **Collect Results in rank 0**
 
-- **Invalid Record Skipping**: When `parse_line` returns `None`, the main loop filters them via `if all([...])`.
-- **Timestamp Resilience**: `try-except` catches illegal time formats (e.g., non-ISO strings).
+~~~python
+    all_hour_sentiment = comm.gather(hour_sentiment, root=0)
+    all_user_sentiment = comm.gather(user_sentiment, root=0)
 
----
+    if rank == 0:
+        combined_hour = defaultdict(float)
+        combined_user = defaultdict(float)
 
-### **5. Performance Optimization Notes**
+        for hs in all_hour_sentiment:
+            for hour, sentiment in hs.items():
+                combined_hour[hour] += sentiment
 
-### **I/O Bottleneck**
-
-- **Issue**: Concurrent file reads by multiple processes may cause contention.
-- **Suggestion**:
-    
-    ```python
-    # Use memory-mapped files (requires binary mode)
-    with open(filename, 'rb') as f:
-        mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-        # Read 'mm' object by byte offsets
-    
-    ```
-    
-
-### **Load Balancing**
-
-- **Issue**: Uneven sentiment score distribution may lead to workload imbalance.
-- **Suggestion**:
-    - Dynamically allocate data chunks (e.g., root process distributes rows on-demand).
-    - Use `MPI_Scatterv` instead of fixed partitioning.
+        for us in all_user_sentiment:
+            for user, sentiment in us.items():
+                combined_user[user] += sentiment
+~~~
 
 
-### **Conclusion**
 
-Our parallelization strategy effectively leverages HPC resources through **data partitioning + local aggregation + global merging**. Key strengths:
+## **Performance Analysis**
 
-1. **Coarse-Grained Partitioning**: Reduces inter-process communication.
-2. **Dictionary Merging**: Lowers memory pressure on the root process.
-3. **Fault Tolerance**: Ensures long-running stability.
+For 144G dataset, 1 node 8 cores task has the best performance which takes 256 seconds and 2 nodes 4 cores task takes 267 seconds, 1 node 1 core has the worst performance which is 2597 seconds. In each task, the run time on each core is almost the same and the aggregation time is less than 1 second. The reason for 1 node 8 cores job having the best performance is all 8 cores are on the same machine, so there’s no inter-node communication. For 2 nodes 4 cores, (even though it's minimal due to small aggregation time). I/O bandwidth per node might also be lower if shared file system access is not as efficient across nodes. For 1node 1 core, No parallelism at all. One core processes the entire 144GB dataset sequentially, becoming the bottleneck. I/O and CPU are underutilized, leading to extremely long execution time. Finally, the data merging task is lightweight tasks and always completes quickly.
 
-For further optimization, consider the I/O and load-balancing suggestions above.
+So, The key performance factors are parallelism level, I/O bandwidth, and communication overhead. Maximum performance is achieved when all cores are on the same node and can work in parallel with minimal data transfer delay. The pictures below shows the results for [1-1] [2-4] [1-8] version in order respectively.
 
-### 性能分析
+| <img src="image%202.png" alt="image.png" style="zoom: 33%;" /> | <img src="image%203.png" alt="image.png" style="zoom: 33%;" /> | <img src="/Users/garvyn/Downloads/v3/image 5.png" alt="image 5" style="zoom: 25%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
-amdahl’S law+三种模式下的性能差距
++ **Diagram of Results**
+
+<img src="image%204.png" alt="image.png" style="zoom: 67%;" />
+
+
+
+### **Amdahl’S Law Application**
+
+Observed speedup ≈ 2597 / 256 ≈ **10.14x ; 2597 / 267** ≈ 9.72x **then** Using Amdahl’s Law to estimate parallel portion P. One node eight cores & Two nodes four cores:
+
+$$
+10.14 =  1/((1-p) + (p/8))  → P ≈  0.995
+$$
+
+for 2 nodes, Still benefits from high parallelism (~99.5%), but performance loss comes from cross-node communication overhead and shared file system I/O contention.
+
+| **Mode**     | **Time** | **Speed Up** | **Performance**                               |
+| ------------ | -------- | ------------ | --------------------------------------------- |
+| 1node,1core  | 2597     | 1x           | No parallelism, CPU and I/O are bottlenecks   |
+| 1node,8cores | 256      | 10.14x       | Near-optimal scaling, minimal communication   |
+| 2node,4cores | 267      | 9.7x         | Effective parallelism, slight inter-node cost |
+
+
+
+:heavy_exclamation_mark:**Tips** -- More information about *CI/CD* process can be seen our Github website [https://github.com/GarvynY/Cluster_parallel_computing_spartan.git](ccc.pdf) 
